@@ -126,20 +126,22 @@ networks:
 まず、プロジェクトのルートディレクトリに `Dockerfile` を作成します。このファイルには、`news-viewer` アプリケーションの環境を設定するための指示が含まれます。
 
 ```Dockerfile
-# ベースイメージとして公式のPythonイメージを使用
-FROM python:3.10-slim
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
 
-# 作業ディレクトリを設定
+# Set the working directory in the container
 WORKDIR /app
 
-# 依存関係をインストール
-COPY requirements.txt ./
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# アプリケーションのソースコードをコピー
-COPY . .
+# Make port 8501 available to the world outside this container
+EXPOSE 8501
 
-# アプリケーションを起動
+# Run streamlit when the container launches
 CMD ["streamlit", "run", "home.py"]
 ```
 
@@ -168,7 +170,7 @@ docker build -t news-viewer .
 次に、作成した Docker イメージを実行して、アプリケーションをテストします。
 
 ```sh
-docker run -p 8501:8501 --network my_network news-viewer
+docker run -d --rm -p 8501:8501 --network my_network --name news-viewer news-viewer
 ```
 
 このコマンドは、アプリケーションをコンテナ内で起動し、ローカルマシンのポート `8501` を使用してアクセスできるようにします。ブラウザで `http://localhost:8501` にアクセスして、アプリケーションが正しく動作することを確認してください。
