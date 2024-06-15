@@ -48,7 +48,7 @@ def refresh_token():
     response = requests.post(TOKEN_URL, data=data)
     if response.status_code == 200:
         data = response.json()
-        st.session_state.token = data["accesss_token"]
+        st.session_state.token = data["access_token"]
         st.session_state.token_expires = time.time() + data["expires_in"]
         return True
     else:
